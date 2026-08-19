@@ -1,52 +1,117 @@
 package com.example.ui.theme
 
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 
-private val DarkColorScheme =
-  darkColorScheme(primary = Purple80, secondary = PurpleGrey80, tertiary = Pink80)
+data class TesseraColors(
+    val bg: Color,
+    val surface: Color,
+    val surfaceAlt: Color,
+    val surfaceActive: Color,
+    val primaryContainer: Color,
+    val onPrimaryContainer: Color,
+    val accentStrong: Color,
+    val textPrimary: Color,
+    val textSecondary: Color,
+    val textMuted: Color,
+    val divider: Color,
+    val primaryGradient: Brush,
+    val isObsidianRose: Boolean
+)
 
-private val LightColorScheme =
-  lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
+val LocalTesseraColors = staticCompositionLocalOf {
+    TesseraColors(
+        bg = ObsidianRoseBg,
+        surface = ObsidianRoseSurface,
+        surfaceAlt = ObsidianRoseSurfaceAlt,
+        surfaceActive = ObsidianRoseActiveCard,
+        primaryContainer = ObsidianRosePrimaryContainer,
+        onPrimaryContainer = ObsidianRoseOnPrimaryContainer,
+        accentStrong = ObsidianRoseAccentStrong,
+        textPrimary = ObsidianRoseTextPrimary,
+        textSecondary = ObsidianRoseTextSecondary,
+        textMuted = ObsidianRoseTextMuted,
+        divider = ObsidianRoseDivider,
+        primaryGradient = ObsidianRoseGradient,
+        isObsidianRose = true
+    )
+}
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
-  )
+val ObsidianRoseColorScheme = darkColorScheme(
+    primary = ObsidianRosePrimary,
+    onPrimary = ObsidianRoseOnPrimaryContainer,
+    primaryContainer = ObsidianRosePrimaryContainer,
+    onPrimaryContainer = ObsidianRoseOnPrimaryContainer,
+    secondary = ObsidianRoseAccentStrong,
+    background = ObsidianRoseBg,
+    onBackground = ObsidianRoseTextPrimary,
+    surface = ObsidianRoseSurface,
+    onSurface = ObsidianRoseTextPrimary,
+    surfaceVariant = ObsidianRoseSurfaceAlt,
+    onSurfaceVariant = ObsidianRoseTextSecondary,
+    outline = ObsidianRoseDivider,
+    error = AccentError
+)
+
+val EmeraldEclipseColorScheme = darkColorScheme(
+    primary = EmeraldEclipsePrimary,
+    onPrimary = EmeraldEclipseOnPrimaryContainer,
+    primaryContainer = EmeraldEclipsePrimaryContainer,
+    onPrimaryContainer = EmeraldEclipseOnPrimaryContainer,
+    secondary = EmeraldEclipseAccentStrong,
+    background = EmeraldEclipseBg,
+    onBackground = EmeraldEclipseTextPrimary,
+    surface = EmeraldEclipseSurface,
+    onSurface = EmeraldEclipseTextPrimary,
+    surfaceVariant = EmeraldEclipseSurfaceAlt,
+    onSurfaceVariant = EmeraldEclipseTextSecondary,
+    outline = ObsidianRoseDivider,
+    error = AccentError
+)
 
 @Composable
-fun MyApplicationTheme(
-  darkTheme: Boolean = isSystemInDarkTheme(),
-  // Dynamic color is available on Android 12+
-  dynamicColor: Boolean = true,
-  content: @Composable () -> Unit,
+fun TesseraTheme(
+    selectedTheme: String = "Obsidian Rose",
+    content: @Composable () -> Unit
 ) {
-  val colorScheme =
-    when {
-      dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-        val context = LocalContext.current
-        if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-      }
+    val isRose = selectedTheme != "Emerald Eclipse"
+    val colorScheme = if (isRose) ObsidianRoseColorScheme else EmeraldEclipseColorScheme
 
-      darkTheme -> DarkColorScheme
-      else -> LightColorScheme
+    val customColors = TesseraColors(
+        bg = if (isRose) ObsidianRoseBg else EmeraldEclipseBg,
+        surface = if (isRose) ObsidianRoseSurface else EmeraldEclipseSurface,
+        surfaceAlt = if (isRose) ObsidianRoseSurfaceAlt else EmeraldEclipseSurfaceAlt,
+        surfaceActive = if (isRose) ObsidianRoseActiveCard else Color(0xFF14241D),
+        primaryContainer = if (isRose) ObsidianRosePrimaryContainer else EmeraldEclipsePrimaryContainer,
+        onPrimaryContainer = if (isRose) ObsidianRoseOnPrimaryContainer else EmeraldEclipseOnPrimaryContainer,
+        accentStrong = if (isRose) ObsidianRoseAccentStrong else EmeraldEclipseAccentStrong,
+        textPrimary = if (isRose) ObsidianRoseTextPrimary else EmeraldEclipseTextPrimary,
+        textSecondary = if (isRose) ObsidianRoseTextSecondary else EmeraldEclipseTextSecondary,
+        textMuted = if (isRose) ObsidianRoseTextMuted else EmeraldEclipseTextMuted,
+        divider = ObsidianRoseDivider,
+        primaryGradient = if (isRose) ObsidianRoseGradient else EmeraldEclipseGradient,
+        isObsidianRose = isRose
+    )
+
+    CompositionLocalProvider(LocalTesseraColors provides customColors) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
     }
+}
 
-  MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
+object TesseraThemeHelper {
+    val colors: TesseraColors
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalTesseraColors.current
 }
